@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-
-import 'Navber.dart';
+import 'package:myapp/API/ServiceLogin.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -57,104 +53,20 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton(
                   onPressed: () async {
-                    // void login(String username, password) async {
-                    //   try {
-                    //     Response response = await post(
-                    //         Uri.parse(
-                    //             'https://plain-ruby-piranha.cyclic.app/login'),
-                    //         body: {"username": "Max", "password": "1234"});
-                    //     // print(response);
-                    //     if (response.statusCode == 200) {
-                    //       var data = jsonDecode(response.body.toString());
-                    //       Navigator.pushReplacement(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //           builder: (context) => const NavbarPage(),
-                    //         ),
-                    //       );
-                    //       print(data['token']);
-                    //       print('Login successfully');
-                    //     } else {
-                    //       print('failed');
-                    //     }
-                    //   } catch (e) {
-                    //     print(e.toString());
-                    //   }
-                    // }
+                    ServiceLogin.login(context, username, password)
+                        .then((userModel) {
+                      print("Username: ${userModel.username}");
+                      print("Email: ${userModel.email}");
 
-                    void login(String username, password) async {
-                      try {
-                        const String url =
-                            "https://plain-ruby-piranha.cyclic.app/login";
-                        Map<String, String> headers = {
-                          "accept": "*/*",
-                        };
-
-                        Response response = await post(
-                          Uri.parse(url),
-                          headers: headers,
-                          body: {"username": username, "password": password},
-                        );
-
-                        if (response.statusCode == 200) {
-                          var data = jsonDecode(response.body.toString());
-                          print(data);
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const NavbarPage(),
-                            ),
-                          );
-                          print('Login successfully');
-                        } else if (response.statusCode == 401) {
-                          print('Invalid username or password');
-                        } else {
-                          print(
-                              'Request failed with status code ${response.statusCode}');
-                        }
-                      } catch (e) {
-                        print('Error during login: $e');
-                      }
-                    }
-
-                    login(username, password);
-
-                    // try {
-
-                    //   var data = {'username': username, 'password': password};
-
-                    //   // Starting Web API Call.
-                    //   var response = await http.post(url,
-                    //       body: json.encode(data)); // REMOVED [email]
-                    //   print(data);
-
-                    //   if (response.statusCode == 200) {
-                    //     // ทำตามขั้นตอนที่คุณต้องการหลังจากเรียก API สำเร็จ
-                    //     Navigator.pushReplacement(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => const NavbarPage(),
-                    //       ),
-                    //     );
-                    //   } else {
-                    //     // กรณีเกิดข้อผิดพลาดในการเรียก API
-                    //     // ให้ทำการแสดงข้อความหรือจัดการข้อผิดพลาดตามที่คุณต้องการ
-                    //     ScaffoldMessenger.of(context).showSnackBar(
-                    //       const SnackBar(
-                    //         content: Text('Login failed. Please try again.'),
-                    //       ),
-                    //     );
-                    //   }
-                    // } catch (error) {
-                    //   // กรณีเกิดข้อผิดพลาดในการเชื่อมต่อ
-                    //   // ให้ทำการแสดงข้อความหรือจัดการข้อผิดพลาดตามที่คุณต้องการ
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(
-                    //       content: Text(
-                    //           'An error occurred. Please try again later.'),
-                    //     ),
-                    //   );
-                    // }
+                      // ทำการนำทางไปยังหน้าอื่นหลังจากล็อกอินเรียบร้อยแล้ว
+                      // Navigator.of(context).pushReplacement(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const NavbarPage(),
+                      //   ),
+                      // );
+                    }).catchError((error) {
+                      print("Error: $error");
+                    });
                   },
                   style: ButtonStyle(
                     fixedSize:

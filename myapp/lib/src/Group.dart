@@ -1,126 +1,104 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/API/Service.dart';
+import 'package:myapp/models/index.dart';
+import 'package:myapp/src/memberGroup.dart';
 
-class GroupPage extends StatefulWidget {
-  const GroupPage({Key? key}) : super(key: key);
+class GroupPage extends StatelessWidget {
+  // const GroupPage({super.key});
 
-  @override
-  _GroupPageeState createState() => _GroupPageeState();
-}
+  final Usermodel userModel;
 
-class _GroupPageeState extends State<GroupPage> {
-  // late Users usersData = Users(users: [], Groups: []);
-
-  @override
-  void initState() {
-    super.initState();
-    fetchData(); // Fetch user data when the widget is initialized
-  }
-
-  Future<void> fetchData() async {
-    try {
-      final data = await APIService.getUsers();
-      setState(() {
-        usersData = data;
-      });
-    } catch (e) {
-      // Handle any errors that may occur during the HTTP request
-      print('Error fetching data: $e');
-    }
-  }
+  const GroupPage({Key? key, required this.userModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Friend"),
-        backgroundColor: const Color(0xFFF29727),
+        backgroundColor: Colors.amber[700],
+        title: const Text(
+          "Group",
+          style: TextStyle(
+              fontFamily: 'kanit', fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
       ),
-      body: ListView.builder(
-          itemCount: usersData != null ? usersData.users.length : 0,
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              onTap: () {
-                // เมื่อคลิกที่ ListTile จะเปิดหน้า UserDetail โดยส่งข้อมูลผู้ใช้ไปด้วย
-                // Navigator.of(context).push(MaterialPageRoute(
-                //   builder: (context) => UserDetail(
-                //     user: usersData.users[index],
-                //   ),
-                // ));
-              },
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: ListTileTheme(
-                  contentPadding: EdgeInsets.zero,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30.0, // ปรับขนาดรูปภาพตามที่คุณต้องการ
-                      backgroundImage: NetworkImage(usersData.users[index].img),
-                    ),
-                    title: Text(
-                      usersData.users[index].name,
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "Email: ${usersData.users[index].email}",
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+      // backgroundColor: Colors.amber[600],
+      body: FutureBuilder<Groups>(
+        future: ServiceAPI.getGroup(userModel.username),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // แสดง CircularProgressIndicator เมื่อกำลังโหลดข้อมูล
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          }),
-      // body: SingleChildScrollView(
-      //   child: Column(
-      //     children: [
-      //       if (usersData != null)
-      //         for (int index = 0; index < usersData.users.length; index++)
-      //           Card(
-      //             child: Padding(
-      //               padding: const EdgeInsets.all(10.0),
-      //               child: Column(
-      //                 mainAxisAlignment: MainAxisAlignment.start,
-      //                 crossAxisAlignment: CrossAxisAlignment.stretch,
-      //                 children: <Widget>[
-      //                   ListTile(
-      //                     leading: CircleAvatar(
-      //                       backgroundImage:
-      //                           NetworkImage(usersData.users[index].img),
-      //                     ),
-      //                     title: Text(
-      //                       usersData.users[index].name,
-      //                       style: const TextStyle(
-      //                           color: Color.fromARGB(255, 0, 0, 0),
-      //                           fontSize: 16.0),
-      //                     ),
-      //                     subtitle: Text(
-      //                       "Email: ${usersData.users[index].email}",
-      //                       style: const TextStyle(
-      //                           color: Color.fromARGB(255, 0, 0, 0),
-      //                           fontSize: 14.0),
-      //                     ),
-      //                     trailing: const Icon(Icons.arrow_forward_ios),
-      //                     onTap: () {
-      //                       // Navigator.of(context).push(MaterialPageRoute(
-      //                       //   builder: (context) => UserDetail(
-      //                       //     user: usersData!.users[index],
-      //                       //   ),
-      //                       // ));
-      //                     },
-      //                   ),
-      //                 ],
-      //               ),
-      //             ),
-      //           ),
-      //     ],
-      //   ),
-      // ),
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            final groups = snapshot.data?.groups;
+            if (groups != null && groups.isNotEmpty) {
+              print('Number of groups: ${groups.length}');
+              print('First group name: $groups');
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(0.0),
+                itemCount: groups.length,
+                itemBuilder: (context, index) {
+                  final group = groups[index];
+
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => memberGroupPage(
+                              group: group, usermodel: userModel),
+                        ),
+                      );
+                      print(group.groupid);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 0.0),
+                      child: Card(
+                        elevation: 2.0,
+
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(20.0)), // เพิ่มขอบโค้ง 4 ด้าน
+                        ),
+                        // color: const Color.fromARGB(255, 234, 234, 234),
+
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(10.0),
+                          title: Padding(
+                            padding: const EdgeInsets.only(left: 16.0),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.group),
+                                const SizedBox(width: 20),
+                                Text(
+                                  group.name,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: 'kanit',
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // trailing: const Icon(Icons.arrow_forward_ios),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            } else {
+              return const Text('No products available.');
+            }
+          }
+        },
+      ),
     );
   }
 }
