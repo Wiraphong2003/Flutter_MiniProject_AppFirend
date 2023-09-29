@@ -96,7 +96,7 @@ class memberGroupPage extends StatelessWidget {
               onPressed: () {
                 _openMemberGroupPage(context);
               },
-              icon: const Icon(Icons.add))
+              icon: const Icon(Icons.group_add))
         ],
       ),
       body: FutureBuilder<Users>(
