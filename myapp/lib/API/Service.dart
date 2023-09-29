@@ -121,15 +121,27 @@ class ServiceAPI {
 
     if (response.statusCode == 200) {
       return true;
-      // final Map<String, dynamic> responseData = json.decode(response.body);
-      // final userModel = Usermodel.fromJson(responseData);
+    } else {
+      throw Exception('Failed to add firend');
+    }
+  }
 
-      // ทำการนำทางไปยังหน้า NavbarPage
-      // Navigator.of(context).pushReplacement(
-      //   MaterialPageRoute(
-      //     builder: (context) => NavbarPage(userModels: userModel),
-      //   ),
-      // );
+  static createGroup(String usernameingroup, String groupname) async {
+    final Map<String, String> data = {
+      "namegroup": groupname,
+      "username": usernameingroup
+    };
+
+    final response = await http.post(
+      Uri.parse("$URLI/createGroup"),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(data),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
     } else {
       throw Exception('Failed to add firend');
     }

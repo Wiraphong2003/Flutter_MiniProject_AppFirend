@@ -91,7 +91,7 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                   ),
                 ),
               );
-              refreshData();
+              // refreshData();
             },
             icon: const Icon(Icons.group_add),
           ),
