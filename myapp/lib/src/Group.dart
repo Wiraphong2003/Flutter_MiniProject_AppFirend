@@ -50,7 +50,7 @@ class GroupPage extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => memberGroupPage(
+                          builder: (context) => MemberGroupPage(
                               group: group, usermodel: userModel),
                         ),
                       );

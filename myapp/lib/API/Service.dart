@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:myapp/models/index.dart';
 
@@ -121,7 +120,7 @@ class ServiceAPI {
     );
 
     if (response.statusCode == 200) {
-      return const Text("Successful");
+      return true;
       // final Map<String, dynamic> responseData = json.decode(response.body);
       // final userModel = Usermodel.fromJson(responseData);
 
@@ -132,7 +131,7 @@ class ServiceAPI {
       //   ),
       // );
     } else {
-      throw Exception('Failed to log in');
+      throw Exception('Failed to add firend');
     }
   }
 }
