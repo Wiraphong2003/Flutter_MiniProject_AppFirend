@@ -99,8 +99,8 @@ class memberGroupPage extends StatelessWidget {
               icon: const Icon(Icons.add))
         ],
       ),
-      body: FutureBuilder<Members>(
-        future: ServiceAPI.getmember(usermodel.username, group.name),
+      body: FutureBuilder<Users>(
+        future: ServiceAPI.getuserfromgroupdetail("${group.groupid}"),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // แสดง CircularProgressIndicator เมื่อกำลังโหลดข้อมูล
@@ -110,17 +110,17 @@ class memberGroupPage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            final members = snapshot.data?.members;
-            if (members != null && members.isNotEmpty) {
+            final users = snapshot.data?.users;
+            if (users != null && users.isNotEmpty) {
               // Remove the inner declaration of groups
-              print('Number of groups: ${members.length}');
-              print('First group name: $members');
+              print('Number of groups: ${users.length}');
+              print('First group name: $users');
 
               return ListView.builder(
                 padding: const EdgeInsets.all(10.0),
-                itemCount: members.length,
+                itemCount: users.length,
                 itemBuilder: (context, index) {
-                  final member = members[index];
+                  final user = users[index];
 
                   return GestureDetector(
                     // onTap: () {
@@ -146,16 +146,16 @@ class memberGroupPage extends StatelessWidget {
                             children: <Widget>[
                               ListTile(
                                 leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(member.img)),
+                                    backgroundImage: NetworkImage(user.img)),
                                 title: Text(
-                                  member.username,
+                                  user.username,
                                   style: const TextStyle(
                                       fontFamily: 'kanit',
                                       color: Color.fromARGB(255, 0, 0, 0),
                                       fontSize: 16.0),
                                 ),
                                 subtitle: Text(
-                                  member.memo,
+                                  user.phone,
                                   style: const TextStyle(
                                       fontFamily: 'kanit',
                                       color: Color.fromARGB(255, 0, 0, 0),
@@ -173,60 +173,7 @@ class memberGroupPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // child: Card(
-                      //   elevation: 2.0,
-
-                      //   shape: const RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.all(
-                      //         Radius.circular(20.0)), // เพิ่มขอบโค้ง 4 ด้าน
-                      //   ),
-                      //   // color: const Color.fromARGB(255, 234, 234, 234),
-
-                      //   child: ListTile(
-                      //     contentPadding: const EdgeInsets.all(10.0),
-                      //     title: Padding(
-                      //       padding: const EdgeInsets.only(left: 16.0),
-                      //       child: Row(
-                      //         children: [
-                      //           const Icon(Icons.group),
-                      //           const SizedBox(width: 20),
-                      //           Text(
-                      //             member.username,
-                      //             style: const TextStyle(
-                      //                 color: Colors.black,
-                      //                 fontFamily: 'kanit',
-                      //                 fontSize: 18.0,
-                      //                 fontWeight: FontWeight.w300),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //     ),
-                      //     subtitle: Text(member.memo,
-                      //         style: const TextStyle(
-                      //           fontFamily: 'kanit',
-                      //         )),
-                      //     // trailing: const Icon(Icons.arrow_forward_ios),
-                      //   ),
-                      // ),
                     ),
-                    // child: Padding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    //   child: Card(
-                    //     elevation: 2.0,
-                    //     child: ListTile(
-                    //       contentPadding: const EdgeInsets.all(16.0),
-                    //       title: Text(
-                    //         member.username,
-                    //         style: const TextStyle(
-                    //           color: Colors.black,
-                    //           fontFamily: 'kanit',
-                    //           fontSize: 18.0,
-                    //         ),
-                    //       ),
-                    //       subtitle: Text(member.memo),
-                    //     ),
-                    //   ),
-                    // ),
                   );
                 },
               );

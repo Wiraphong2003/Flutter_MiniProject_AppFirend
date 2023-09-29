@@ -5,20 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:myapp/models/index.dart';
 
 class ServiceAPI {
-  static const String urlgetGroup =
-      "https://plain-ruby-piranha.cyclic.app/group";
-
-  static const String urlmember =
-      "https://plain-ruby-piranha.cyclic.app/membergroup";
-
-  static const String urladdfriend =
-      "https://plain-ruby-piranha.cyclic.app/addfriendinGroup";
+  static const String URLI = "https://fair-mite-gaiters.cyclic.cloud";
 
   static Future<Groups> getGroup(String username) async {
     try {
-      // final Uri uri = Uri.parse(urlgetGroup + username);
       final response = await http.get(
-        Uri.parse("$urlgetGroup/$username"),
+        Uri.parse("$URLI/group/$username"),
         headers: {
           'Content-Type': 'application/json', // Adjust content type as needed
           'Access-Control-Allow-Origin':
@@ -51,7 +43,7 @@ class ServiceAPI {
   static Future<Members> getmember(String username, String groupname) async {
     try {
       final response = await http.get(
-        Uri.parse("$urlmember/$username/$groupname"),
+        Uri.parse("$URLI/membergroup/$username/$groupname"),
         headers: {
           'Content-Type': 'application/json', // Adjust content type as needed
           'Access-Control-Allow-Origin':
@@ -80,6 +72,38 @@ class ServiceAPI {
     return m;
   }
 
+  //userdetail
+  static Future<Users> getuserfromgroupdetail(String groupid) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$URLI/datauseringroup/$groupid"),
+        headers: {
+          'Content-Type': 'application/json', // Adjust content type as needed
+          'Access-Control-Allow-Origin':
+              '*', // Replace '*' with your actual allowed origin
+          // Add more headers if necessary
+        },
+      );
+
+      if (200 == response.statusCode) {
+        return userfromgroupdetail(response.body);
+      } else {
+        return Users();
+      }
+    } catch (e) {
+      print('Error ${e.toString()}');
+      return Users();
+    }
+  }
+
+  static Users userfromgroupdetail(String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    List<User> users = parsed.map<User>((json) => User.fromJson(json)).toList();
+    Users u = Users();
+    u.users = users;
+    return u;
+  }
+
   static addfriend(
       String usernameingroup, String groupname, String usernameNew) async {
     final Map<String, String> data = {
@@ -89,7 +113,7 @@ class ServiceAPI {
     };
 
     final response = await http.post(
-      Uri.parse(urladdfriend),
+      Uri.parse("$URLI/addfriendinGroup"),
       headers: {
         'Content-Type': 'application/json',
       },

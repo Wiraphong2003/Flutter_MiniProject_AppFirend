@@ -1,6 +1,6 @@
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/models/group.dart';
+import 'package:myapp/models/groups.dart';
 
 import '../API/Service.dart';
 import '../models/members.dart';
@@ -9,6 +9,7 @@ import '../models/usermodel.dart';
 class MainMapPage extends StatefulWidget {
   // const MainMapPage({Key? key}) : super(key: key);
   final Usermodel userModel;
+
   const MainMapPage({Key? key, required this.userModel}) : super(key: key);
 
   @override
@@ -17,13 +18,29 @@ class MainMapPage extends StatefulWidget {
 
 class _MainMapPageState extends State<MainMapPage> {
   late final Usermodel userModel;
-  late final Group group;
 
+  late final Groups groups;
+
+  String? selectedValue;
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   userModel = widget.userModel; // Initialize userModel from widget
+  // }
   @override
   void initState() {
     super.initState();
     userModel = widget.userModel; // Initialize userModel from widget
-    // group = widget.group; // Initialize group from widget
+    // เรียกใช้ ServiceAPI.getGroup เพื่อดึงข้อมูลกลุ่ม
+    ServiceAPI.getGroup(userModel.username).then((retrievedGroups) {
+      setState(() {
+        groups = retrievedGroups;
+      });
+    }).catchError((error) {
+      // จัดการข้อผิดพลาดในกรณีที่เกิดข้อผิดพลาดในการดึงข้อมูล
+      print('Error fetching groups: $error');
+    });
+    print(groups.name[0]);
   }
 
   @override
@@ -42,12 +59,12 @@ class _MainMapPageState extends State<MainMapPage> {
                   topRight: Radius.circular(50.0),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 20),
-                  SizedBox(width: 20),
-                  Column(
+                  const SizedBox(height: 20),
+                  const SizedBox(width: 20),
+                  const Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SizedBox(
@@ -65,8 +82,8 @@ class _MainMapPageState extends State<MainMapPage> {
                       ),
                     ],
                   ),
-                  SizedBox(width: 120.0),
-                  Column(
+                  const SizedBox(width: 120.0),
+                  const Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Icon(
@@ -76,6 +93,49 @@ class _MainMapPageState extends State<MainMapPage> {
                       ),
                     ],
                   ),
+                  Column(
+                    children: [
+                      // DropdownButton<String>(
+                      //   value: selectedValue,
+                      //   onChanged: (String? newValue) {
+                      //     if (newValue != null) {
+                      //       setState(() {
+                      //         selectedValue = newValue;
+                      //       });
+                      //     }
+                      //   },
+                      //   items: <String>[
+                      //     'กินข้าว',
+                      //     'AA',
+                      //     'ทำงาน',
+                      //   ].map<DropdownMenuItem<String>>((String value) {
+                      //     return DropdownMenuItem<String>(
+                      //       value: value,
+                      //       child: Text(value),
+                      //     );
+                      //   }).toList(),
+                      // ),
+                      DropdownButton<String>(
+                        value: selectedValue,
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              selectedValue = newValue;
+                            });
+                          }
+                        },
+                        items: groups.groups.isNotEmpty
+                            ? groups.groups
+                                .map<DropdownMenuItem<String>>((group) {
+                                return DropdownMenuItem<String>(
+                                  value: group.name,
+                                  child: Text(group.name),
+                                );
+                              }).toList()
+                            : [],
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -85,7 +145,8 @@ class _MainMapPageState extends State<MainMapPage> {
                     Color.fromARGB(255, 255, 255, 255), // เพิ่มสีให้กับ Header
               ),
               child: FutureBuilder<Members>(
-                future: ServiceAPI.getmember(userModel.username, "AA"),
+                future:
+                    ServiceAPI.getmember(userModel.username, "$selectedValue"),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // แสดง CircularProgressIndicator เมื่อกำลังโหลดข้อมูล
@@ -165,60 +226,7 @@ class _MainMapPageState extends State<MainMapPage> {
                                   ),
                                 ),
                               ),
-                              // child: Card(
-                              //   elevation: 2.0,
-
-                              //   shape: const RoundedRectangleBorder(
-                              //     borderRadius: BorderRadius.all(
-                              //         Radius.circular(20.0)), // เพิ่มขอบโค้ง 4 ด้าน
-                              //   ),
-                              //   // color: const Color.fromARGB(255, 234, 234, 234),
-
-                              //   child: ListTile(
-                              //     contentPadding: const EdgeInsets.all(10.0),
-                              //     title: Padding(
-                              //       padding: const EdgeInsets.only(left: 16.0),
-                              //       child: Row(
-                              //         children: [
-                              //           const Icon(Icons.group),
-                              //           const SizedBox(width: 20),
-                              //           Text(
-                              //             member.username,
-                              //             style: const TextStyle(
-                              //                 color: Colors.black,
-                              //                 fontFamily: 'kanit',
-                              //                 fontSize: 18.0,
-                              //                 fontWeight: FontWeight.w300),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //     subtitle: Text(member.memo,
-                              //         style: const TextStyle(
-                              //           fontFamily: 'kanit',
-                              //         )),
-                              //     // trailing: const Icon(Icons.arrow_forward_ios),
-                              //   ),
-                              // ),
                             ),
-                            // child: Padding(
-                            //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            //   child: Card(
-                            //     elevation: 2.0,
-                            //     child: ListTile(
-                            //       contentPadding: const EdgeInsets.all(16.0),
-                            //       title: Text(
-                            //         member.username,
-                            //         style: const TextStyle(
-                            //           color: Colors.black,
-                            //           fontFamily: 'kanit',
-                            //           fontSize: 18.0,
-                            //         ),
-                            //       ),
-                            //       subtitle: Text(member.memo),
-                            //     ),
-                            //   ),
-                            // ),
                           );
                         },
                       );
@@ -228,46 +236,6 @@ class _MainMapPageState extends State<MainMapPage> {
                   }
                 },
               ),
-              // child: ListView.builder(
-              //   itemCount: usersData != null ? usersData!.users.length : 0,
-              //   itemBuilder: (BuildContext context, int index) {
-              //     return InkWell(
-              //       onTap: () {
-              //         // Handle onTap logic
-              //       },
-              //       child: Padding(
-              //         padding: const EdgeInsets.symmetric(
-              //           vertical: 8.0,
-              //           horizontal: 16.0,
-              //         ),
-              //         child: ListTileTheme(
-              //           contentPadding: EdgeInsets.zero,
-              //           child: ListTile(
-              //             leading: CircleAvatar(
-              //               radius: 30.0, // ปรับขนาดรูปภาพตามที่คุณต้องการ
-              //               backgroundImage:
-              //                   NetworkImage(usersData!.users[index].img),
-              //             ),
-              //             title: Text(
-              //               usersData!.users[index].name,
-              //               style: const TextStyle(
-              //                 color: Color.fromARGB(255, 0, 0, 0),
-              //                 fontSize: 18.0,
-              //               ),
-              //             ),
-              //             subtitle: Text(
-              //               "Email: ${usersData!.users[index].email}",
-              //               style: const TextStyle(
-              //                 color: Color.fromARGB(255, 0, 0, 0),
-              //                 fontSize: 14.0,
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-              //     );
-              //   },
-              // ),
             ),
             headerHeight: 200,
             drawerHeight: 350,

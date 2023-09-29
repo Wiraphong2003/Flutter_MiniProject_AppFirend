@@ -7,8 +7,8 @@ import 'MainMap.dart';
 class NavbarPage extends StatelessWidget {
   final Usermodel userModel;
 
-  const NavbarPage({Key? key, required this.userModel}) : super(key: key);
-
+  // const NavbarPage({Key? key, required this.userModel}) : super(key: key);
+  const NavbarPage({super.key, required this.userModel});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,9 +20,10 @@ class NavbarPage extends StatelessWidget {
 class BottomNavigationBarExample extends StatefulWidget {
   final Usermodel userModel;
 
-  const BottomNavigationBarExample({Key? key, required this.userModel})
-      : super(key: key);
-
+  // const BottomNavigationBarExample(
+  //     {Key? key, required this.userModel, required this.groups})
+  //     : super(key: key);
+  const BottomNavigationBarExample({super.key, required this.userModel});
   @override
   State<BottomNavigationBarExample> createState() =>
       _BottomNavigationBarExampleState();

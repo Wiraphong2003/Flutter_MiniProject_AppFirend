@@ -73,7 +73,8 @@ import 'package:myapp/src/Navber.dart';
 // }
 
 class ServiceLogin {
-  static const String apiUrl = "https://plain-ruby-piranha.cyclic.app/login";
+  static const String apiUrl = "https://fair-mite-gaiters.cyclic.cloud/login";
+  // static const String apiUrl = "https://plain-ruby-piranha.cyclic.app/login";
   Usermodel? _cachedUserModel;
 
   // Method to get the userModel
