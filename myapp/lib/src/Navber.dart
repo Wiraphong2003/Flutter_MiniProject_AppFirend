@@ -13,6 +13,7 @@ class NavbarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: BottomNavigationBarExample(userModel: userModel),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -42,7 +43,7 @@ class _BottomNavigationBarExampleState
 
   @override
   Widget build(BuildContext context) {
-    List<String> appBarTitles = ['main', 'Friend'];
+    // List<String> appBarTitles = ['main', 'Friend'];
     return Scaffold(
       body: Center(
         child: _widgetOptions(widget.userModel).elementAt(_selectedIndex),
