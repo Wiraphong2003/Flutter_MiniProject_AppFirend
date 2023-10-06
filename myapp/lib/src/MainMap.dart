@@ -273,7 +273,8 @@ class _MainMapPageState extends State<MainMapPage> {
   bool isLoading = false;
   String? selectedValue;
   Groups? groups;
-
+  bool ischeck = false;
+  late double sizewtemp;
   @override
   void initState() {
     super.initState();
@@ -293,6 +294,7 @@ class _MainMapPageState extends State<MainMapPage> {
         selectedValue =
             groups!.groups.isNotEmpty ? groups!.groups[0].name : null;
         isLoading = false;
+        ischeck = true;
       });
     } catch (error) {
       print('Error fetching groups: $error');
@@ -318,6 +320,12 @@ class _MainMapPageState extends State<MainMapPage> {
   }
 
   Widget buildHeader() {
+    if (ischeck) {
+      sizewtemp = 80;
+    } else {
+      sizewtemp = 125;
+    }
+    double width = sizewtemp;
     return Container(
       decoration: const BoxDecoration(
         color: Color.fromARGB(255, 255, 255, 255),
@@ -364,7 +372,8 @@ class _MainMapPageState extends State<MainMapPage> {
                 }).toList() ??
                 [],
           ),
-          const SizedBox(width: 80),
+          // const SizedBox(width: width),
+          SizedBox(width: width),
           const Center(
             child: Icon(
               Icons.horizontal_rule_outlined,

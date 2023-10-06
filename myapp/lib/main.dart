@@ -9,6 +9,7 @@ void main() {
         '/': (context) => const MyApp(), // เส้นทางหน้า Login
         // '/mainmap': (context) => const MapSample(), // เส้นทางหน้า MainMap
       },
+      debugShowCheckedModeBanner: false,
     ),
   );
 }
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -43,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
           decoration: const BoxDecoration(
@@ -60,11 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment
                   .center, // จัดการตำแหน่งแนวตั้งของส่วนของ Column
               children: [
-                // const Image(
-                //   image: AssetImage('https://i.ibb.co/vZkB255/icon-fraind.png'),
-                //   width: 200,
-                //   height: 200,
-                // ),
                 Image.network(
                   'https://i.ibb.co/vZkB255/icon-fraind.png',
                   width: 200,
@@ -82,18 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(
                   height: 100,
                 ),
-                // TextButton(
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //           builder: (context) =>
-                //               const LoginPage()), // ใช้ LoginPage() แทน Login()
-                //     );
-                //   },
-                //   child: const Text('Text Button'),
-                // ),
-
                 Container(
                   width: 200,
                   decoration: BoxDecoration(
