@@ -5,7 +5,7 @@ import 'package:myapp/models/index.dart';
 
 class ServiceAPI {
   static const String URLI = "https://fair-mite-gaiters.cyclic.cloud";
-
+  // static const String URLI = "http://192.168.1.115";
   static Future<Groups> getGroup(String username) async {
     try {
       final response = await http.get(

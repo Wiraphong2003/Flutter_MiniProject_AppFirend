@@ -1,5 +1,6 @@
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myapp/models/groups.dart';
 
 import '../API/Service.dart';
@@ -62,9 +63,34 @@ class _MainMapPageState extends State<MainMapPage> {
             color: const Color.fromARGB(0, 0, 0, 0),
           ),
         ),
+        GoogleMap(
+          initialCameraPosition: const CameraPosition(
+            target: LatLng(37.42796133580664, -122.085749655962),
+            zoom: 14,
+          ),
+          onMapCreated: (GoogleMapController controller) {
+            // คุณสามารถใส่การกำหนดค่าเริ่มต้นของแผนที่ได้ที่นี่
+          },
+        ),
       ],
     );
   }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Stack(
+  //     children: [
+  //       ClipRRect(
+  //         child: BottomDrawer(
+  //           header: buildHeader(),
+  //           body: buildMemberList(),
+  //           headerHeight: 200,
+  //           drawerHeight: 350,
+  //           color: const Color.fromARGB(0, 0, 0, 0),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget buildHeader() {
     if (ischeck) {
