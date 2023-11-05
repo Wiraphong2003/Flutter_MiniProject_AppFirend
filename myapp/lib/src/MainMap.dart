@@ -1,5 +1,6 @@
 import 'package:bottom_drawer/bottom_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:myapp/models/groups.dart';
 
@@ -18,16 +19,53 @@ class MainMapPage extends StatefulWidget {
 
 class _MainMapPageState extends State<MainMapPage> {
   late final Usermodel userModel;
+  Set<Marker> markers = {};
   bool isLoading = false;
   String? selectedValue;
   Groups? groups;
   bool ischeck = false;
   late double sizewtemp;
+  late double wilocation;
+  GoogleMapController? mapController;
+  double latitude = 0.0;
+  double longitude = 0.0;
+
   @override
   void initState() {
     super.initState();
     userModel = widget.userModel;
     fetchData();
+    getCurrentLocation();
+  }
+
+  Future<void> getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // ตำแหน่งปัจจุบันของผู้ใช้
+      double latitude = position.latitude;
+      double longitude = position.longitude;
+
+      latitude = position.latitude; // กำหนดค่าให้กับตัวแปร latitude
+      longitude = position.longitude; // กำหนดค่าให้กับตัวแปร longitude
+
+      // สร้าง Marker
+      final marker = Marker(
+        markerId: MarkerId(userModel.username),
+        position: LatLng(latitude, longitude),
+        infoWindow: const InfoWindow(title: 'Your Location'),
+      );
+
+      // เพิ่ม Marker เข้าใน Set<Marker>
+      markers.add(marker);
+
+      // print(latitude);
+      // print(longitude);
+    } catch (e) {
+      print('Error getting current location: $e');
+    }
   }
 
   Future<void> fetchData() async {
@@ -54,6 +92,16 @@ class _MainMapPageState extends State<MainMapPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        GoogleMap(
+          initialCameraPosition: const CameraPosition(
+            target: LatLng(16.245875, 103.250251),
+            zoom: 15,
+          ),
+          markers: markers, // ใช้ markers ที่เราสร้าง
+          onMapCreated: (GoogleMapController controller) {
+            mapController = controller;
+          },
+        ),
         ClipRRect(
           child: BottomDrawer(
             header: buildHeader(),
@@ -63,42 +111,20 @@ class _MainMapPageState extends State<MainMapPage> {
             color: const Color.fromARGB(0, 0, 0, 0),
           ),
         ),
-        GoogleMap(
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(37.42796133580664, -122.085749655962),
-            zoom: 14,
-          ),
-          onMapCreated: (GoogleMapController controller) {
-            // คุณสามารถใส่การกำหนดค่าเริ่มต้นของแผนที่ได้ที่นี่
-          },
-        ),
       ],
     );
   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Stack(
-  //     children: [
-  //       ClipRRect(
-  //         child: BottomDrawer(
-  //           header: buildHeader(),
-  //           body: buildMemberList(),
-  //           headerHeight: 200,
-  //           drawerHeight: 350,
-  //           color: const Color.fromARGB(0, 0, 0, 0),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget buildHeader() {
     if (ischeck) {
       sizewtemp = 80;
+      wilocation = 120;
     } else {
       sizewtemp = 125;
+      wilocation = 120;
     }
     double width = sizewtemp;
+    double widthlocation = wilocation;
     return Container(
       decoration: const BoxDecoration(
         color: Color.fromARGB(255, 255, 255, 255),
@@ -152,6 +178,27 @@ class _MainMapPageState extends State<MainMapPage> {
               Icons.horizontal_rule_outlined,
               size: 50,
               color: Colors.grey,
+            ),
+          ),
+          //  const SizedBox(width: 30),
+
+          SizedBox(width: widthlocation),
+          SizedBox(
+            width: 30.0,
+            height: 30.0,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: FloatingActionButton(
+                onPressed: () {
+                  LatLng destination = LatLng(latitude, longitude);
+
+                  if (mapController != null) {
+                    mapController
+                        ?.animateCamera(CameraUpdate.newLatLng(destination));
+                  }
+                },
+                child: const Icon(Icons.my_location),
+              ),
             ),
           ),
         ],
