@@ -190,7 +190,8 @@ class _MainMapPageState extends State<MainMapPage> {
               alignment: Alignment.bottomCenter,
               child: FloatingActionButton(
                 onPressed: () {
-                  LatLng destination = LatLng(latitude, longitude);
+                  // LatLng destination = LatLng(latitude, longitude);
+                  LatLng destination = const LatLng(16.245875, 103.250251);
 
                   if (mapController != null) {
                     mapController
